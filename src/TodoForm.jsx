@@ -3,7 +3,7 @@ const TodoForm = ({ onAddTodo }) => {
   const todoTitleInput = useRef('');
   const handleAddTodo = (event) => {
     event.preventDefault();
-    const title = event.target.title;
+    const title = event.target.title.value;
     onAddTodo(title);
     event.target.title.value = '';
     todoTitleInput.current.focus();
