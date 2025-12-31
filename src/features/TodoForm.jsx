@@ -11,7 +11,7 @@ const TodoForm = ({ onAddTodo }) => {
     onAddTodo(workingTodoTitle);
     setWorkingTodoTitle('');
     const title = event.target.title;
-    event.target.title = '';
+    // event.target.title = '';
     todoTitleInput.current.focus();
   };
 
@@ -25,7 +25,7 @@ const TodoForm = ({ onAddTodo }) => {
             setWorkingTodoTitle(e.target.value);
           }}
           elementId="todoTitle"
-          labelText="Todo"
+          label="Todo"
         />
         <button disabled={workingTodoTitle === ''}>Add Todo</button>
       </form>
