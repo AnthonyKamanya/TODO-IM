@@ -11,20 +11,32 @@ function App() {
     setTodoList([...todoList, newTodo]);
   };
   const completeTodo = (id) => {
-    const updatedTodos = todoList.map((todo) => {
+    const completedUpdatedTodos = todoList.map((todo) => {
       if (todo.id === id) {
         return { ...todo, isCompleted: true };
       } else {
         return todo;
       }
     });
-    setTodoList(updatedTodos);
+    setTodoList(completedUpdatedTodos);
   };
+
+  const handleUpdateTodo = (editedTodo) => {
+    const editedUpdatedTodos = todoList.map((todo) => {
+      if (todo.id === editedTodo.id) {
+        return { ...editedTodo };
+      } else {
+        return todo;
+      }
+    });
+    setTodoList(editedUpdatedTodos);
+  };
+
   return (
     <div>
       <h1>My Todos</h1>
       <TodoForm onAddTodo={addTodo} />
-      <TodoList todoList={todoList} onCompleteTodo={completeTodo} />
+      <TodoList todoList={todoList} onCompleteTodo={completeTodo} onUpdateTodo={handleUpdateTodo} />
     </div>
   );
 }

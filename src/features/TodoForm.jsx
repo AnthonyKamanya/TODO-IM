@@ -11,7 +11,7 @@ const TodoForm = ({ onAddTodo }) => {
     onAddTodo(workingTodoTitle);
     setWorkingTodoTitle('');
     const title = event.target.title;
-    event.target.title.value = '';
+    event.target.title = '';
     todoTitleInput.current.focus();
   };
 
