@@ -1,5 +1,5 @@
 import TodoListItem from './TodoListItem';
-const TodoList = ({ todoList, onCompleteTodo }) => {
+const TodoList = ({ todoList, onCompleteTodo, onUpdateTodo }) => {
   const filteredTodoList = todoList.filter(
     (todo) => !todo.isCompleted === true
   );
@@ -14,6 +14,7 @@ const TodoList = ({ todoList, onCompleteTodo }) => {
               key={todo.id}
               todo={todo}
               onCompleteTodo={onCompleteTodo}
+              onUpdateTodo={onUpdateTodo}
             >
               {todo.title}
             </TodoListItem>
