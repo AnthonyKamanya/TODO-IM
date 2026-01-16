@@ -106,8 +106,8 @@ function App() {
         {
           id: id,
           fields: {
-            title: id.title,
-            isCompleted: id.isCompleted,
+            title,
+            isCompleted: true,
           },
         },
       ],
