@@ -1,12 +1,16 @@
 import TodoListItem from './TodoListItem';
-const TodoList = ({ todoList, onCompleteTodo, onUpdateTodo }) => {
+const TodoList = ({ todoList, onCompleteTodo, onUpdateTodo, isLoading }) => {
   const filteredTodoList = todoList.filter(
     (todo) => !todo.isCompleted === true
   );
   return (
     <>
       {todoList.length === 0 ? (
-        <p>Add todo above to get started</p>
+        isLoading ? (
+          <p>Todo list loading ...</p>
+        ) : (
+          <p>Add todo above to get started </p>
+        )
       ) : (
         <ul>
           {filteredTodoList.map((todo) => (
@@ -16,7 +20,7 @@ const TodoList = ({ todoList, onCompleteTodo, onUpdateTodo }) => {
               onCompleteTodo={onCompleteTodo}
               onUpdateTodo={onUpdateTodo}
             >
-              {todo.title}
+              {todo}
             </TodoListItem>
           ))}
         </ul>
