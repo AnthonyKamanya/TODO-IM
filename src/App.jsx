@@ -106,7 +106,7 @@ function App() {
         {
           id: id,
           fields: {
-            title: todo.title,
+            title: originalTodo.title,
             isCompleted: true,
           },
         },
