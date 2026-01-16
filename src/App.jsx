@@ -88,7 +88,7 @@ function App() {
 
   const completeTodo = async (id) => {
     //Save the ORIGINAL todo (your undo button)
-    const originalTodo = todoList.find((todo) => todo.di === id);
+    const originalTodo = todoList.find((todo) => todo.id === id);
 
     // Optimistically update the UI (instant feedback)
     const completedUpdatedTodos = todoList.map((todo) => {
@@ -143,7 +143,7 @@ function App() {
 
   const handleUpdateTodo = async (editedTodo) => {
     //Save the ORIGINAL todo (your undo button)
-    const originalTodo = todoList.find((todo) => todo.di === editedTodo.id);
+    const originalTodo = todoList.find((todo) => todo.id === editedTodo.id);
     // Optimistically update the UI (instant feedback)
     const editedUpdatedTodos = todoList.map((todo) => {
       if (todo.id === editedTodo.id) {
