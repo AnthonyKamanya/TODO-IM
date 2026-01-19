@@ -3,12 +3,27 @@ const TodosViewsForm = ({
   setSortDirection,
   sortField,
   setSortField,
+  queryString,
+  setQueryString,
 }) => {
   const preventRefresh = (event) => {
     event.preventDefault();
   };
   return (
     <form onSubmit={preventRefresh}>
+      <div>
+        <label>Search todos</label>
+        <input
+          type="text"
+          value={queryString}
+          onChange={(event) => {
+            setQueryString(event.target.value);
+          }}
+        ></input>
+        <button type="button" onClick={()=>(setQueryString(""))}>
+          Clear
+        </button>
+      </div>
       <div>
         <label>Sort by</label>
         <select
