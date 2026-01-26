@@ -16,6 +16,7 @@ function App() {
   const [sortField, setSortField] = useState('createdTime');
   const [sortDirection, setSortDirection] = useState('desc');
   const [queryString, setQueryString] = useState('');
+  const [localQueryString, setLocalQueryString] = useState(queryString);
 
   const encodeUrl = useCallback(() => {
     ({ sortField, sortDirection, queryString }) => {
@@ -226,8 +227,8 @@ function App() {
         setSortDirection={setSortDirection}
         sortField={sortField}
         setSortField={setSortField}
-        queryString={queryString}
-        setQueryString={setQueryString}
+        localQueryString={localQueryString}
+        setLocalQueryString={setLocalQueryString}
       />{' '}
       {errorMessage && (
         <div>
