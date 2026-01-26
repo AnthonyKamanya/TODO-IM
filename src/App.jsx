@@ -19,15 +19,13 @@ function App() {
   const [localQueryString, setLocalQueryString] = useState(queryString);
 
   const encodeUrl = useCallback(() => {
-    ({ sortField, sortDirection, queryString }) => {
-      let searchQuery = '';
-      let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
-      if (queryString) {
-        searchQuery = `&filterByFormula=SEARCH("${queryString}",+title)`;
-      }
-      return encodeURI(`${url}?${sortQuery}${searchQuery}`);
-    };
-  }, [sortDirection, sortDirection, queryString]);
+    let searchQuery = '';
+    let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
+    if (queryString) {
+      searchQuery = `&filterByFormula=SEARCH("${queryString}",+title)`;
+    }
+    return encodeURI(`${url}?${sortQuery}${searchQuery}`);
+  }, [sortDirection, sortField, queryString]);
 
   useEffect(() => {
     const fetchTodos = async () => {
