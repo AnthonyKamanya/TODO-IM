@@ -7,6 +7,7 @@ const TodosViewsForm = ({
   setSortField,
   localQueryString,
   setLocalQueryString,
+  setQueryString,
 }) => {
   const preventRefresh = (event) => {
     event.preventDefault();
@@ -17,7 +18,7 @@ const TodosViewsForm = ({
     return () => {
       clearTimeout(debounce);
     };
-  }, [localQueryString]);
+  }, [localQueryString, setQueryString]);
 
   return (
     <form onSubmit={preventRefresh}>

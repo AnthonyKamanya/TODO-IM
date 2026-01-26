@@ -229,6 +229,7 @@ function App() {
         setSortField={setSortField}
         localQueryString={localQueryString}
         setLocalQueryString={setLocalQueryString}
+        setQueryString={setQueryString}
       />{' '}
       {errorMessage && (
         <div>
