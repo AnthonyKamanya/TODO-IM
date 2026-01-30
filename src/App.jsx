@@ -2,20 +2,11 @@ import './App.css';
 import TodoForm from './features/TodoForm';
 import TodoList from './features/TodoList/TodoList';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import TodosViewsForm from './features/TodosViewForm';
 
 const token = `Bearer ${import.meta.env.VITE_PAT}`;
 const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
-
-const encodeUrl = ({ sortField, sortDirection, queryString }) => {
-  let searchQuery = '';
-  let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
-  if (queryString) {
-    searchQuery = `&filterByFormula=SEARCH("${queryString}",+title)`;
-  }
-  return encodeURI(`${url}?${sortQuery}${searchQuery}`);
-};
 
 function App() {
   const [todoList, setTodoList] = useState([]);
@@ -25,16 +16,23 @@ function App() {
   const [sortField, setSortField] = useState('createdTime');
   const [sortDirection, setSortDirection] = useState('desc');
   const [queryString, setQueryString] = useState('');
+  const [localQueryString, setLocalQueryString] = useState(queryString);
+
+  const encodeUrl = useCallback(() => {
+    let searchQuery = '';
+    let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
+    if (queryString) {
+      searchQuery = `&filterByFormula=SEARCH("${queryString}",+title)`;
+    }
+    return encodeURI(`${url}?${sortQuery}${searchQuery}`);
+  }, [sortDirection, sortField, queryString]);
 
   useEffect(() => {
     const fetchTodos = async () => {
       setIsLoading(true);
       const options = { method: 'GET', headers: { Authorization: token } };
       try {
-        const resp = await fetch(
-          encodeUrl({ sortDirection, sortField, queryString }),
-          options
-        );
+        const resp = await fetch(encodeUrl(), options);
         if (!resp.ok) {
           throw new Error(resp.message);
         }
@@ -79,10 +77,7 @@ function App() {
     // setTodoList([...todoList, newTodo]);
     try {
       setIsSaving(true);
-      const resp = await fetch(
-        encodeUrl({ sortField, sortDirection, queryString }),
-        options
-      );
+      const resp = await fetch(encodeUrl(), options);
       if (!resp.ok) {
         throw new Error(resp.message);
       }
@@ -142,10 +137,7 @@ function App() {
     //Try to save to Airtable
     try {
       setIsSaving(true);
-      const resp = await fetch(
-        encodeUrl({ sortField, sortDirection, queryString }),
-        options
-      );
+      const resp = await fetch(encodeUrl(), options);
       if (!resp.ok) {
         throw new Error(resp.message);
       }
@@ -199,10 +191,7 @@ function App() {
     //Try to save to Airtable
     try {
       setIsSaving(true);
-      const resp = await fetch(
-        encodeUrl({ sortField, sortDirection, queryString }),
-        options
-      );
+      const resp = await fetch(encodeUrl(), options);
       if (!resp.ok) {
         throw new Error(resp.message);
       }
@@ -236,7 +225,8 @@ function App() {
         setSortDirection={setSortDirection}
         sortField={sortField}
         setSortField={setSortField}
-        queryString={queryString}
+        localQueryString={localQueryString}
+        setLocalQueryString={setLocalQueryString}
         setQueryString={setQueryString}
       />{' '}
       {errorMessage && (
