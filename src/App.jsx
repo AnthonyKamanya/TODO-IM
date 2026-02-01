@@ -22,7 +22,7 @@ function App() {
     let searchQuery = '';
     let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
     if (queryString) {
-      searchQuery = `&filterByFormula=SEARCH("${queryString}",+title)`;
+      searchQuery = `&filterByFormula=SEARCH("${queryString.toLowerCase()}",+LOWER(title))`;
     }
     return encodeURI(`${url}?${sortQuery}${searchQuery}`);
   }, [sortDirection, sortField, queryString]);
@@ -210,38 +210,40 @@ function App() {
   };
 
   return (
-    <div>
-      <h1>My Todos</h1>
-      <TodoForm onAddTodo={addTodo} isSaving={isSaving} />
-      <TodoList
-        todoList={todoList}
-        onCompleteTodo={completeTodo}
-        onUpdateTodo={handleUpdateTodo}
-        isLoading={isLoading}
-      />
-      <hr />
-      <TodosViewsForm
-        sortDirection={sortDirection}
-        setSortDirection={setSortDirection}
-        sortField={sortField}
-        setSortField={setSortField}
-        localQueryString={localQueryString}
-        setLocalQueryString={setLocalQueryString}
-        setQueryString={setQueryString}
-      />{' '}
-      {errorMessage && (
-        <div>
-          <hr />
-          <p>{errorMessage}</p>
-          <button
-            onClick={() => {
-              setErrorMessage('');
-            }}
-          >
-            Dismiss
-          </button>
-        </div>
-      )}
+    <div className="app-container">
+      <div className="container">
+        <h1>Todo App</h1>
+        <TodoForm onAddTodo={addTodo} isSaving={isSaving} />
+        <TodoList
+          todoList={todoList}
+          onCompleteTodo={completeTodo}
+          onUpdateTodo={handleUpdateTodo}
+          isLoading={isLoading}
+        />
+        <hr />
+        <TodosViewsForm
+          sortDirection={sortDirection}
+          setSortDirection={setSortDirection}
+          sortField={sortField}
+          setSortField={setSortField}
+          localQueryString={localQueryString}
+          setLocalQueryString={setLocalQueryString}
+          setQueryString={setQueryString}
+        />{' '}
+        {errorMessage && (
+          <div>
+            <hr />
+            <p>{errorMessage}</p>
+            <button
+              onClick={() => {
+                setErrorMessage('');
+              }}
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
