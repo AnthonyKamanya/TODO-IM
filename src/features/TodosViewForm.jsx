@@ -28,7 +28,7 @@ const TodosViewsForm = ({
           type="text"
           value={localQueryString}
           onChange={(event) => {
-            setLocalQueryString(event.target.value);
+            setLocalQueryString(event.target.value.toLowerCase());//Lowercase when saving
           }}
         ></input>
         <button type="button" onClick={() => setLocalQueryString('')}>

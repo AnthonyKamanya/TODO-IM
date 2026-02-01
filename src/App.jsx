@@ -22,7 +22,7 @@ function App() {
     let searchQuery = '';
     let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
     if (queryString) {
-      searchQuery = `&filterByFormula=SEARCH("${queryString.toLowerCase()}",+LOWER(title))`;
+      searchQuery = `&filterByFormula=SEARCH("${queryString.toLowerCase()}",+LOWER(title))`;//Lowercase when searching
     }
     return encodeURI(`${url}?${sortQuery}${searchQuery}`);
   }, [sortDirection, sortField, queryString]);
