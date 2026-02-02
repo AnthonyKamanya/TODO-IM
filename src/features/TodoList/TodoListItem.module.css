@@ -1,0 +1,17 @@
+
+
+.listItem {
+  display: flex;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s ease;
+}
+
+.listItem:hover {
+  background-color: #f9fafb;
+}
+
+.listItem:last-child {
+  border-bottom: none;
+}
