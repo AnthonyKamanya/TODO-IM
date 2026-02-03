@@ -1,4 +1,8 @@
 import { useEffect } from 'react';
+import StyledForm from './TodoList/Styles/Form';
+import StyledInput from './TodoList/Styles/Input';
+import StyledButton from './TodoList/Styles/Button';
+import styled from 'styled-components';
 
 const TodosViewsForm = ({
   sortDirection,
@@ -20,24 +24,38 @@ const TodosViewsForm = ({
     };
   }, [localQueryString, setQueryString]);
 
+  const StyledSelect = styled.select`
+    flex: 1;
+    min-width: 200px;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    color: #1f2937;
+    background-color: #ffffff;
+    transition: all 0.2s ease;
+    outline: none;
+    margin: 0.5rem;
+  `;
+
   return (
-    <form onSubmit={preventRefresh}>
+    <StyledForm onSubmit={preventRefresh}>
       <div>
         <label>Search todos</label>
-        <input
+        <StyledInput
           type="text"
           value={localQueryString}
           onChange={(event) => {
-            setLocalQueryString(event.target.value.toLowerCase());//Lowercase when saving
+            setLocalQueryString(event.target.value.toLowerCase()); //Lowercase when saving
           }}
-        ></input>
-        <button type="button" onClick={() => setLocalQueryString('')}>
+        ></StyledInput>
+        <StyledButton type="button" onClick={() => setLocalQueryString('')}>
           Clear
-        </button>
+        </StyledButton>
       </div>
       <div>
         <label>Sort by</label>
-        <select
+        <StyledSelect
           value={sortField}
           onChange={(event) => {
             setSortField(event.target.value);
@@ -45,9 +63,9 @@ const TodosViewsForm = ({
         >
           <option value="title">Title</option>
           <option value="createdTime">Time added</option>
-        </select>
+        </StyledSelect>
         <label>Direction</label>
-        <select
+        <StyledSelect
           onChange={(event) => {
             setSortDirection(event.target.value);
           }}
@@ -55,9 +73,9 @@ const TodosViewsForm = ({
         >
           <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
-        </select>
+        </StyledSelect>
       </div>
-    </form>
+    </StyledForm>
   );
 };
 

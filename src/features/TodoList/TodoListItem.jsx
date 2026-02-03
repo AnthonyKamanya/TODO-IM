@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import TextInputWithLabel from '../../shared/TextInputWithLabel';
 import styles from './TodoListItem.module.css';
+import StyledButton from './Styles/Button';
 
 const TodoListItem = ({
   todo,
@@ -46,12 +47,12 @@ const TodoListItem = ({
                 elementId={elementId}
                 label={label}
               />
-              <button type="button" onClick={handleCancel}>
+              <StyledButton type="button" onClick={handleCancel}>
                 Cancel
-              </button>
-              <button type="button" onClick={handleUpdate}>
+              </StyledButton>
+              <StyledButton type="button" onClick={handleUpdate}>
                 Update
-              </button>
+              </StyledButton>
             </>
           ) : (
             <label>
