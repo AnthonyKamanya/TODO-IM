@@ -4,7 +4,7 @@ import TodoList from './features/TodoList/TodoList';
 
 import { useCallback, useEffect, useState } from 'react';
 import TodosViewsForm from './features/TodosViewForm';
-import styles from './App.module.css'
+import styles from './App.module.css';
 
 const token = `Bearer ${import.meta.env.VITE_PAT}`;
 const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
@@ -23,7 +23,7 @@ function App() {
     let searchQuery = '';
     let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
     if (queryString) {
-      searchQuery = `&filterByFormula=SEARCH("${queryString.toLowerCase()}",+LOWER(title))`;//Lowercase when searching
+      searchQuery = `&filterByFormula=SEARCH("${queryString.toLowerCase()}",+LOWER(title))`; //Lowercase when searching
     }
     return encodeURI(`${url}?${sortQuery}${searchQuery}`);
   }, [sortDirection, sortField, queryString]);
