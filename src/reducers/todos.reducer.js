@@ -29,6 +29,30 @@ function reducer(state = initialState, action) {
     case actions.fetchTodos:
       return {
         ...state,
+        isLoading: true,
+      };
+    case actions.loadTodos:
+      const fetchedRecords = action.records.map((record) => {
+        const todo = {
+          id: record.id,
+          ...record.fields,
+        };
+        if (!todo.isCompleted) {
+          todo.isCompleted = false;
+        }
+        return todo;
+      });
+
+      return {
+        ...state,
+        todoList: fetchedRecords,
+        isLoading: false,
+      };
+    case actions.setLoadError:
+      return {
+        ...state,
+        errorMessage: action.error.message,
+        isLoading: false,
       };
     default:
       return state;
