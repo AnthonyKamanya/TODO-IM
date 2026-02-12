@@ -2,14 +2,23 @@ import './App.css';
 import TodoForm from './features/TodoForm';
 import TodoList from './features/TodoList/TodoList';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useReducer, useState } from 'react';
 import TodosViewsForm from './features/TodosViewForm';
 import styles from './App.module.css';
+
+import {
+  initialState as todoListInitialState,
+  reducer as todoListReducer,
+} from './reducers/todos.reducer.js';
 
 const token = `Bearer ${import.meta.env.VITE_PAT}`;
 const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
 
 function App() {
+  const [todoListState, dispatch] = useReducer(
+    todoListReducer,
+    todoListInitialState
+  );
   const [todoList, setTodoList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -48,6 +57,7 @@ function App() {
           }
           return todo;
         });
+        //1st TodoListStateUpdater
         setTodoList([...fetchedRecords]);
       } catch (error) {
         setErrorMessage(error.message);
@@ -92,6 +102,7 @@ function App() {
         savedTodo.isCompleted = false;
       }
       console.log(savedTodo);
+      //2nd TodoListStateUpdater
       setTodoList([...todoList, savedTodo]);
     } catch (error) {
       console.log(error);
@@ -113,6 +124,7 @@ function App() {
         return todo;
       }
     });
+    //3rd TodoListStateUpdater
     setTodoList(completedUpdatedTodos);
 
     //Create the payload (Airtable shipping box)
@@ -150,6 +162,7 @@ function App() {
       const revertedTodos = todoList.map((todo) =>
         todo.id === originalTodo.id ? originalTodo : todo
       );
+      //4th TodoListStateUpdater
       setTodoList([...revertedTodos]);
     } finally {
       setIsSaving(false);
@@ -167,6 +180,7 @@ function App() {
         return todo;
       }
     });
+    //5th TodoListStateUpdater
     setTodoList(editedUpdatedTodos);
 
     //Create the payload (Airtable shipping box)
@@ -204,6 +218,7 @@ function App() {
       const revertedTodos = todoList.map((todo) =>
         todo.id === originalTodo.id ? originalTodo : todo
       );
+      //6th TodoListStateUpdater
       setTodoList([...revertedTodos]);
     } finally {
       setIsSaving(false);
