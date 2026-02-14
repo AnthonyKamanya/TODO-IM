@@ -88,7 +88,7 @@ function App() {
 
   const completeTodo = async (id) => {
     //Save the ORIGINAL todo (your undo button)
-    // const originalTodo = todoList.find((todo) => todo.id === id);
+    const originalTodo = todoListState.todoList.find((todo) => todo.id === id);
 
     // Optimistically update the UI (instant feedback)
     dispatch({ type: todoActions.completeTodo, id });
@@ -132,10 +132,11 @@ function App() {
 
   const handleUpdateTodo = async (editedTodo) => {
     //Save the ORIGINAL todo (your undo button)
-    const originalTodo = todoList.find((todo) => todo.id === editedTodo.id);
+    const originalTodo = todoListState.todoList.find(
+      (todo) => todo.id === editedTodo.id
+    );
     // Optimistically update the UI (instant feedback)
-    dispatch({ type: todoActions.updateTodo, 
-      editedTodo });
+    dispatch({ type: todoActions.updateTodo, editedTodo });
 
     //Create the payload (Airtable shipping box)
     const payload = {
