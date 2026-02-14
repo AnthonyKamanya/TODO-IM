@@ -134,7 +134,8 @@ function App() {
     //Save the ORIGINAL todo (your undo button)
     const originalTodo = todoList.find((todo) => todo.id === editedTodo.id);
     // Optimistically update the UI (instant feedback)
-    dispatch({ type: todoActions.updateTodo, editedTodo });
+    dispatch({ type: todoActions.updateTodo, 
+      editedTodo });
 
     //Create the payload (Airtable shipping box)
     const payload = {

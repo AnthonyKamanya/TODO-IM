@@ -81,11 +81,10 @@ export function reducer(state = initialState, action) {
 
     //updateTodo,completeTodo(Optimistic UI)
     case actions.updateTodo:
-      const originalTodo = action.todoList.find((todo) => todo.id === id);
       // Optimistically update the UI (instant feedback)
       const editedUpdatedTodos = state.todoList.map((todo) => {
         if (todo.id === action.editedTodo.id) {
-          return { ...todo, ...action.editedTodo };
+          return action.editedTodo;
         } else {
           return todo;
         }
@@ -115,7 +114,7 @@ export function reducer(state = initialState, action) {
       return {
         ...state,
         errorMessage: action.error.message,
-        todoList: [revertedTodos],
+        todoList: revertedTodos,
       };
 
     //Dismiss Error Button
