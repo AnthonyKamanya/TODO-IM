@@ -90,7 +90,7 @@ function App() {
     const originalTodo = todoListState.todoList.find((todo) => todo.id === id);
 
     // Optimistically update the UI (instant feedback)
-    dispatch({ type: todoActions.completeTodo, id });
+    dispatch({ type: todoActions.completeTodo, id, isCompleted: true });
 
     //Create the payload (Airtable shipping box)
     const payload = {
