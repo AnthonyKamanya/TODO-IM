@@ -20,7 +20,6 @@ function App() {
     todoListReducer,
     todoListInitialState
   );
-  const [errorMessage, setErrorMessage] = useState('');
   const [sortField, setSortField] = useState('createdTime');
   const [sortDirection, setSortDirection] = useState('desc');
   const [queryString, setQueryString] = useState('');
@@ -195,10 +194,10 @@ function App() {
           setLocalQueryString={setLocalQueryString}
           setQueryString={setQueryString}
         />{' '}
-        {errorMessage && (
+        {todoListState.errorMessage && (
           <div className={styles.errorMessage}>
             <hr />
-            <p>{errorMessage}</p>
+            <p>{todoListState.errorMessage}</p>
             <button
               onClick={() => {
                 dispatch({ type: todoActions.clearError });

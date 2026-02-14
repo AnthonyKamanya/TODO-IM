@@ -93,8 +93,9 @@ export function reducer(state = initialState, action) {
       return {
         ...state,
         todoList: editedUpdatedTodos,
-        errorMessage: action.error.message,
+        errorMessage: action.error ? action.error.message : state.errorMessage,
       };
+
     case actions.completeTodo:
       const completedUpdatedTodos = state.todoList.map((todo) =>
         todo.id === action.id
@@ -108,7 +109,7 @@ export function reducer(state = initialState, action) {
       };
 
     case actions.revertTodo:
-      const revertedTodos = action.todoList.map((todo) =>
+      const revertedTodos = state.todoList.map((todo) =>
         todo.id === action.originalTodo.id ? action.originalTodo : todo
       );
       return {
