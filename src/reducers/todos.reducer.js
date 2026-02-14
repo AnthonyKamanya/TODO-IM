@@ -1,4 +1,4 @@
-const actions = {
+export const actions = {
   //actions in useEffect that loads todos
   fetchTodos: 'fetchTodos',
   loadTodos: 'loadTodos',
@@ -17,14 +17,14 @@ const actions = {
   clearError: 'clearError',
 };
 
-const initialState = {
+export const initialState = {
   todoList: [],
   isLoading: false,
   isSaving: false,
   errorMessage: '',
 };
 
-function reducer(state = initialState, action) {
+export function reducer(state = initialState, action) {
   switch (action.type) {
     //useEffect (Pessimistic UI)
     case actions.fetchTodos:
@@ -76,19 +76,16 @@ function reducer(state = initialState, action) {
       };
     case actions.endRequest:
       return { ...state, isLoading: false, isSaving: false };
-    case actions.setLoadError:
-      return { ...state, errorMessage: action.error.message, isLoading: false };
+    // case actions.setLoadError:
+    //   return { ...state, errorMessage: action.error.message, isLoading: false };
 
     //updateTodo,completeTodo(Optimistic UI)
     case actions.updateTodo:
-      //Save the ORIGINAL todo (your undo button)
-      const originalTodo = action.todoList.find(
-        (todo) => todo.id === editedTodo.id
-      );
+      const originalTodo = action.todoList.find((todo) => todo.id === id);
       // Optimistically update the UI (instant feedback)
       const editedUpdatedTodos = state.todoList.map((todo) => {
         if (todo.id === action.editedTodo.id) {
-          return { ...action.editedTodo };
+          return { ...todo, ...action.editedTodo };
         } else {
           return todo;
         }
@@ -96,7 +93,7 @@ function reducer(state = initialState, action) {
 
       return {
         ...state,
-        todoList: [editedUpdatedTodos],
+        todoList: editedUpdatedTodos,
         errorMessage: action.error.message,
       };
     case actions.completeTodo:
@@ -113,7 +110,7 @@ function reducer(state = initialState, action) {
 
     case actions.revertTodo:
       const revertedTodos = action.todoList.map((todo) =>
-        todo.id === originalTodo.id ? originalTodo : todo
+        todo.id === action.originalTodo.id ? action.originalTodo : todo
       );
       return {
         ...state,
@@ -131,4 +128,3 @@ function reducer(state = initialState, action) {
       return state;
   }
 }
-export default { initialState, reducer, actions };

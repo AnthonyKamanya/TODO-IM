@@ -20,10 +20,7 @@ function App() {
     todoListReducer,
     todoListInitialState
   );
-  const [todoList, setTodoList] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
   const [sortField, setSortField] = useState('createdTime');
   const [sortDirection, setSortDirection] = useState('desc');
   const [queryString, setQueryString] = useState('');
@@ -91,7 +88,7 @@ function App() {
 
   const completeTodo = async (id) => {
     //Save the ORIGINAL todo (your undo button)
-    const originalTodo = todoList.find((todo) => todo.id === id);
+    // const originalTodo = todoList.find((todo) => todo.id === id);
 
     // Optimistically update the UI (instant feedback)
     dispatch({ type: todoActions.completeTodo, id });
@@ -179,12 +176,12 @@ function App() {
     <div className={styles.appContainer}>
       <div className={styles.container}>
         <h1> Todo App</h1>
-        <TodoForm onAddTodo={addTodo} isSaving={isSaving} />
+        <TodoForm onAddTodo={addTodo} isSaving={todoListState.isSaving} />
         <TodoList
-          todoList={todoList}
+          todoList={todoListState.todoList}
           onCompleteTodo={completeTodo}
           onUpdateTodo={handleUpdateTodo}
-          isLoading={isLoading}
+          isLoading={todoListState.isLoading}
         />
         <hr />
         <TodosViewsForm
@@ -202,7 +199,7 @@ function App() {
             <p>{errorMessage}</p>
             <button
               onClick={() => {
-                setErrorMessage('');
+                dispatch({ type: todoActions.clearError });
               }}
             >
               Dismiss
