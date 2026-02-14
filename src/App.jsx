@@ -9,6 +9,7 @@ import styles from './App.module.css';
 import {
   initialState as todoListInitialState,
   reducer as todoListReducer,
+  actions as todoActions,
 } from './reducers/todos.reducer.js';
 
 const token = `Bearer ${import.meta.env.VITE_PAT}`;
@@ -39,30 +40,17 @@ function App() {
 
   useEffect(() => {
     const fetchTodos = async () => {
-      setIsLoading(true);
+      dispatch({ type: todoActions.fetchTodos });
       const options = { method: 'GET', headers: { Authorization: token } };
       try {
         const resp = await fetch(encodeUrl(), options);
         if (!resp.ok) {
-          throw new Error(resp.message);
+          throw new Error('Failed to fetch todos');
         }
         const { records } = await resp.json();
-        const fetchedRecords = records.map((record) => {
-          const todo = {
-            id: record.id,
-            ...record.fields,
-          };
-          if (!todo.isCompleted) {
-            todo.isCompleted = false;
-          }
-          return todo;
-        });
-        //1st TodoListStateUpdater
-        setTodoList([...fetchedRecords]);
+        dispatch({ type: todoActions.loadTodos, records });
       } catch (error) {
-        setErrorMessage(error.message);
-      } finally {
-        setIsLoading(false);
+        dispatch({ type: todoActions.setLoadError, error });
       }
     };
     fetchTodos();
@@ -87,28 +75,17 @@ function App() {
     // const newTodo = { title: title, id: Date.now(), isCompleted: false };
     // setTodoList([...todoList, newTodo]);
     try {
-      setIsSaving(true);
+      dispatch({ type: todoActions.startRequest });
       const resp = await fetch(encodeUrl(), options);
       if (!resp.ok) {
-        throw new Error(resp.message);
+        throw new Error('Failed to fetch todos');
       }
       const { records } = await resp.json();
-      const savedTodo = {
-        id: records[0].id,
-        title: records[0].fields.title,
-        isCompleted: records[0].fields.isCompleted ?? false,
-      };
-      if (!records[0].fields.isCompleted) {
-        savedTodo.isCompleted = false;
-      }
-      console.log(savedTodo);
-      //2nd TodoListStateUpdater
-      setTodoList([...todoList, savedTodo]);
+      dispatch({ type: todoActions.addTodo, records });
     } catch (error) {
-      console.log(error);
-      setErrorMessage(error.message);
+      dispatch({ type: todoActions.setLoadError, error });
     } finally {
-      setIsSaving(false);
+      dispatch({ type: todoActions.endRequest });
     }
   };
 
@@ -117,15 +94,7 @@ function App() {
     const originalTodo = todoList.find((todo) => todo.id === id);
 
     // Optimistically update the UI (instant feedback)
-    const completedUpdatedTodos = todoList.map((todo) => {
-      if (todo.id === id) {
-        return { ...todo, isCompleted: true };
-      } else {
-        return todo;
-      }
-    });
-    //3rd TodoListStateUpdater
-    setTodoList(completedUpdatedTodos);
+    dispatch({ type: todoActions.completeTodo, id });
 
     //Create the payload (Airtable shipping box)
     const payload = {
@@ -149,23 +118,18 @@ function App() {
 
     //Try to save to Airtable
     try {
-      setIsSaving(true);
+      dispatch({ type: todoActions.startRequest });
       const resp = await fetch(encodeUrl(), options);
       if (!resp.ok) {
-        throw new Error(resp.message);
+        throw new Error('Failed to fetch todos');
       }
 
       //If it fails → revert
     } catch (error) {
-      console.log(error);
-      setErrorMessage(`${error.message}. Reverting to original todo...`);
-      const revertedTodos = todoList.map((todo) =>
-        todo.id === originalTodo.id ? originalTodo : todo
-      );
-      //4th TodoListStateUpdater
-      setTodoList([...revertedTodos]);
+      dispatch({ type: todoActions.setLoadError, error });
+      dispatch({ type: todoActions.revertTodo, originalTodo });
     } finally {
-      setIsSaving(false);
+      dispatch({ type: todoActions.endRequest });
     }
   };
 
@@ -173,15 +137,7 @@ function App() {
     //Save the ORIGINAL todo (your undo button)
     const originalTodo = todoList.find((todo) => todo.id === editedTodo.id);
     // Optimistically update the UI (instant feedback)
-    const editedUpdatedTodos = todoList.map((todo) => {
-      if (todo.id === editedTodo.id) {
-        return { ...editedTodo };
-      } else {
-        return todo;
-      }
-    });
-    //5th TodoListStateUpdater
-    setTodoList(editedUpdatedTodos);
+    dispatch({ type: todoActions.updateTodo, editedTodo });
 
     //Create the payload (Airtable shipping box)
     const payload = {
@@ -205,23 +161,17 @@ function App() {
 
     //Try to save to Airtable
     try {
-      setIsSaving(true);
+      dispatch({ type: todoActions.startRequest });
       const resp = await fetch(encodeUrl(), options);
       if (!resp.ok) {
-        throw new Error(resp.message);
+        throw new Error('Failed to fetch todos');
       }
-
       //If it fails → revert
     } catch (error) {
-      console.log(error);
-      setErrorMessage(`${error.message}. Reverting todo...`);
-      const revertedTodos = todoList.map((todo) =>
-        todo.id === originalTodo.id ? originalTodo : todo
-      );
-      //6th TodoListStateUpdater
-      setTodoList([...revertedTodos]);
+      dispatch({ type: todoActions.setLoadError, error });
+      dispatch({ type: todoActions.revertTodo, originalTodo });
     } finally {
-      setIsSaving(false);
+      dispatch({ type: todoActions.endRequest });
     }
   };
 
