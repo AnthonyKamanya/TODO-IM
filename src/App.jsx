@@ -9,17 +9,26 @@ import {
 } from './reducers/todos.reducer.js';
 import TodoPage from './pages/TodosPage.jsx';
 import Header from './shared/Header.jsx';
-import { Route, Routes, useLocation } from 'react-router';
+import { Route, Routes, useLocation, useSearchParams } from 'react-router';
+import About from './pages/About.jsx';
+import NotFound from './pages/NotFound.jsx';
 
 const token = `Bearer ${import.meta.env.VITE_PAT}`;
 const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
 
 function App() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const itemsPerPage = 15;
+  const currentPage = parseInt(searchParams.get('page') || '1', 10);
+  const indexOfFirstTodo = (currentPage - 1) * itemsPerPage;
+
   const location = useLocation();
   const [todoListState, dispatch] = useReducer(
     todoListReducer,
     todoListInitialState
   );
+  const totalPages = Math.ceil(todoListState.todoList.length / itemsPerPage);
+  
   const [titles, setTitle] = useState('');
   const [sortField, setSortField] = useState('createdTime');
   const [sortDirection, setSortDirection] = useState('desc');
@@ -204,8 +213,8 @@ function App() {
               />
             }
           ></Route>
-          <Route path="/about" element={<h1>About</h1>}></Route>
-          <Route path="/\*" element={<h1>Not Found</h1>}></Route>
+          <Route path="/about" element={<About />}></Route>
+          <Route path="*" element={<NotFound />}></Route>
         </Routes>{' '}
         {todoListState.errorMessage && (
           <div className={styles.errorMessage}>
