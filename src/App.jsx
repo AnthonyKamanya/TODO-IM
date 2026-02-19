@@ -216,11 +216,6 @@ function App() {
       }
     }
   }, [currentPage, totalPages, navigate]);
-  // useEffect(() => {
-  //   if (totalPages > 0) {
-  //     Navigate('/');
-  //   }
-  // });
 
   return (
     <div className={styles.appContainer}>
