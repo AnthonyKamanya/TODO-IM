@@ -9,7 +9,14 @@ import {
 } from './reducers/todos.reducer.js';
 import TodoPage from './pages/TodosPage.jsx';
 import Header from './shared/Header.jsx';
-import { Route, Routes, useLocation, useSearchParams } from 'react-router';
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router';
 import About from './pages/About.jsx';
 import NotFound from './pages/NotFound.jsx';
 
@@ -18,9 +25,10 @@ const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${impor
 
 function App() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const itemsPerPage = 15;
+  const itemsPerPage = 10;
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
   const indexOfFirstTodo = (currentPage - 1) * itemsPerPage;
+  const navigate = useNavigate();
 
   const location = useLocation();
   const [todoListState, dispatch] = useReducer(
@@ -28,7 +36,7 @@ function App() {
     todoListInitialState
   );
   const totalPages = Math.ceil(todoListState.todoList.length / itemsPerPage);
-  
+
   const [titles, setTitle] = useState('');
   const [sortField, setSortField] = useState('createdTime');
   const [sortDirection, setSortDirection] = useState('desc');
@@ -188,6 +196,32 @@ function App() {
     }
   };
 
+  //Navigation UI and Handlers-Pagination
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setSearchParams({ page: currentPage + 1 });
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setSearchParams({ page: currentPage - 1 });
+    }
+  };
+
+  useEffect(() => {
+    if (totalPages > 0) {
+      if (isNaN(currentPage) || currentPage < 1 || currentPage > totalPages) {
+        navigate('/');
+      }
+    }
+  }, [currentPage, totalPages, navigate]);
+  // useEffect(() => {
+  //   if (totalPages > 0) {
+  //     Navigate('/');
+  //   }
+  // });
+
   return (
     <div className={styles.appContainer}>
       <div className={styles.container}>
@@ -197,6 +231,8 @@ function App() {
             path="/"
             element={
               <TodoPage
+                currentPage={currentPage}
+                totalPages={totalPages}
                 onAddTodo={addTodo}
                 isSaving={todoListState.isSaving}
                 todoList={todoListState.todoList}
@@ -210,6 +246,8 @@ function App() {
                 localQueryString={localQueryString}
                 setLocalQueryString={setLocalQueryString}
                 setQueryString={setQueryString}
+                handleNextPage={handleNextPage}
+                handlePreviousPage={handlePreviousPage}
               />
             }
           ></Route>

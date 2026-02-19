@@ -1,8 +1,14 @@
 import TodoForm from '../features/TodoForm';
+import StyledButton from '../features/TodoList/Styles/Button';
 import TodoList from '../features/TodoList/TodoList';
 import TodosViewsForm from '../features/TodosViewForm';
+import styles from './TodosPage.module.css';
 
 const TodoPage = ({
+  handlePreviousPage,
+  handleNextPage,
+  currentPage,
+  totalPages,
   addTodo,
   isSaving,
   todoList,
@@ -27,6 +33,20 @@ const TodoPage = ({
         isLoading={isLoading}
       />
       <hr />
+      <div className={styles.paginationControl}>
+        <StyledButton onClick={handlePreviousPage} disabled={currentPage === 1}>
+          Previous
+        </StyledButton>
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+        <StyledButton
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </StyledButton>
+      </div>
       <TodosViewsForm
         sortDirection={sortDirection}
         setSortDirection={setSortDirection}
