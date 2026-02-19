@@ -10,7 +10,6 @@ import {
 import TodoPage from './pages/TodosPage.jsx';
 import Header from './shared/Header.jsx';
 import {
-  Navigate,
   Route,
   Routes,
   useLocation,
@@ -24,8 +23,9 @@ const token = `Bearer ${import.meta.env.VITE_PAT}`;
 const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
 
 function App() {
+  const title = 'Todo App';
   const [searchParams, setSearchParams] = useSearchParams();
-  const itemsPerPage = 10;
+  const itemsPerPage = 15;
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
   const indexOfFirstTodo = (currentPage - 1) * itemsPerPage;
   const navigate = useNavigate();
@@ -220,7 +220,7 @@ function App() {
   return (
     <div className={styles.appContainer}>
       <div className={styles.container}>
-        <Header title="Todo App" />
+        <Header title={title} />
         <Routes>
           <Route
             path="/"
