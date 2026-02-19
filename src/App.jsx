@@ -23,18 +23,26 @@ const token = `Bearer ${import.meta.env.VITE_PAT}`;
 const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
 
 function App() {
+  const [todoListState, dispatch] = useReducer(
+    todoListReducer,
+    todoListInitialState
+  );
   const title = 'Todo App';
   const [searchParams, setSearchParams] = useSearchParams();
   const itemsPerPage = 15;
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
   const indexOfFirstTodo = (currentPage - 1) * itemsPerPage;
+  const indexOfLastTodo = indexOfFirstTodo + itemsPerPage;
+
+  // Slice the list for current page
+  const currentTodos = todoListState.todoList.slice(
+    indexOfFirstTodo,
+    indexOfLastTodo
+  );
   const navigate = useNavigate();
 
   const location = useLocation();
-  const [todoListState, dispatch] = useReducer(
-    todoListReducer,
-    todoListInitialState
-  );
+
   const totalPages = Math.ceil(todoListState.todoList.length / itemsPerPage);
 
   const [titles, setTitle] = useState('');
@@ -230,7 +238,7 @@ function App() {
                 totalPages={totalPages}
                 onAddTodo={addTodo}
                 isSaving={todoListState.isSaving}
-                todoList={todoListState.todoList}
+                todoList={currentTodos}
                 onCompleteTodo={completeTodo}
                 onUpdateTodo={handleUpdateTodo}
                 isLoading={todoListState.isLoading}
