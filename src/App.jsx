@@ -1,9 +1,5 @@
 import './App.css';
-import TodoForm from './features/TodoForm';
-import TodoList from './features/TodoList/TodoList';
-
 import { useCallback, useEffect, useReducer, useState } from 'react';
-import TodosViewsForm from './features/TodosViewForm';
 import styles from './App.module.css';
 
 import {
@@ -11,6 +7,17 @@ import {
   reducer as todoListReducer,
   actions as todoActions,
 } from './reducers/todos.reducer.js';
+import TodoPage from './pages/TodosPage.jsx';
+import Header from './shared/Header.jsx';
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router';
+import About from './pages/About.jsx';
+import NotFound from './pages/NotFound.jsx';
 
 const token = `Bearer ${import.meta.env.VITE_PAT}`;
 const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
@@ -20,6 +27,25 @@ function App() {
     todoListReducer,
     todoListInitialState
   );
+  const title = 'Todo App';
+  const [searchParams, setSearchParams] = useSearchParams();
+  const itemsPerPage = 15;
+  const currentPage = parseInt(searchParams.get('page') || '1', 10);
+  const indexOfFirstTodo = (currentPage - 1) * itemsPerPage;
+  const indexOfLastTodo = indexOfFirstTodo + itemsPerPage;
+
+  // Slice the list for current page
+  const currentTodos = todoListState.todoList.slice(
+    indexOfFirstTodo,
+    indexOfLastTodo
+  );
+  const navigate = useNavigate();
+
+  const location = useLocation();
+
+  const totalPages = Math.ceil(todoListState.todoList.length / itemsPerPage);
+
+  const [titles, setTitle] = useState('');
   const [sortField, setSortField] = useState('createdTime');
   const [sortDirection, setSortDirection] = useState('desc');
   const [queryString, setQueryString] = useState('');
@@ -33,6 +59,11 @@ function App() {
     }
     return encodeURI(`${url}?${sortQuery}${searchQuery}`);
   }, [sortDirection, sortField, queryString]);
+
+  useEffect(() => {
+    const titles = { '/': 'Todo List', '/about': 'About' };
+    setTitle(titles[location.pathname] || 'Not Found');
+  }, [location]);
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -173,27 +204,59 @@ function App() {
     }
   };
 
+  //Navigation UI and Handlers-Pagination
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setSearchParams({ page: currentPage + 1 });
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setSearchParams({ page: currentPage - 1 });
+    }
+  };
+
+  useEffect(() => {
+    if (totalPages > 0) {
+      if (isNaN(currentPage) || currentPage < 1 || currentPage > totalPages) {
+        navigate('/');
+      }
+    }
+  }, [currentPage, totalPages, navigate]);
+
   return (
     <div className={styles.appContainer}>
       <div className={styles.container}>
-        <h1> Todo App</h1>
-        <TodoForm onAddTodo={addTodo} isSaving={todoListState.isSaving} />
-        <TodoList
-          todoList={todoListState.todoList}
-          onCompleteTodo={completeTodo}
-          onUpdateTodo={handleUpdateTodo}
-          isLoading={todoListState.isLoading}
-        />
-        <hr />
-        <TodosViewsForm
-          sortDirection={sortDirection}
-          setSortDirection={setSortDirection}
-          sortField={sortField}
-          setSortField={setSortField}
-          localQueryString={localQueryString}
-          setLocalQueryString={setLocalQueryString}
-          setQueryString={setQueryString}
-        />{' '}
+        <Header title={title} />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <TodoPage
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onAddTodo={addTodo}
+                isSaving={todoListState.isSaving}
+                todoList={currentTodos}
+                onCompleteTodo={completeTodo}
+                onUpdateTodo={handleUpdateTodo}
+                isLoading={todoListState.isLoading}
+                sortDirection={sortDirection}
+                setSortDirection={setSortDirection}
+                sortField={sortField}
+                setSortField={setSortField}
+                localQueryString={localQueryString}
+                setLocalQueryString={setLocalQueryString}
+                setQueryString={setQueryString}
+                handleNextPage={handleNextPage}
+                handlePreviousPage={handlePreviousPage}
+              />
+            }
+          ></Route>
+          <Route path="/about" element={<About />}></Route>
+          <Route path="*" element={<NotFound />}></Route>
+        </Routes>{' '}
         {todoListState.errorMessage && (
           <div className={styles.errorMessage}>
             <hr />
